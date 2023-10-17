@@ -46,24 +46,7 @@ def preenche(screen, pontos):
     for i in pontos:
         pg.draw.circle(screen, (255, 0, 0), (i[0], i[1]), 2)
 
-def upd(circ_list, r, segmentos):
-    while True:
-        pg.display.flip()
-        for event in pg.event.get():
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_0:
-                    orderna_forca_bruta(circ_list, r, segmentos)
-                if event.key == pg.K_1:
-                    ordena_hash(circ_list, r, hash_table(segmentos))
-                if event.key == pg.K_2:
-                    circulos.clear()
-                    for _ in range(25):
-                        circulos.append(gera_circulos(tamanho, seg))
 
-            
-            if event.type == pg.QUIT:
-                pg.quit()
-                exit(0)
 
 def desenha_curvas(pontos, color):
     for i in range(len(pontos)-1):
@@ -157,7 +140,31 @@ def ordena_hash(circ_list, r, table):
             circ_list[i] = (x, y, True)
         i+=1
     
-    
+def upd(circ_list, r, segmentos, screen):
+    while True:
+        screen.fill((0, 0, 0))
+        desenha_curvas(segmentos, (0, 255, 0))
+        for event in pg.event.get():
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_q:
+                    orderna_forca_bruta(circ_list, r, segmentos)
+                if event.key == pg.K_w:
+                    ordena_hash(circ_list, r, hash_table(segmentos))
+                if event.key == pg.K_e:
+                    circ_list.clear()
+                    for _ in range(25):
+                        circ_list.append(gera_circulos(r, seg))
+
+            if event.type == pg.QUIT:
+                pg.quit()
+                exit(0)
+        for i in circ_list:
+            color = (255, 0, 255) if i[2] else (255, 255, 0)
+            pg.draw.circle(screen, color, (i[0], i[1]), r)
+
+        
+        pg.display.flip()
+        
 
 if __name__ == '__main__':
     screen = init()
@@ -169,14 +176,7 @@ if __name__ == '__main__':
     
     seg = seg_retas(pontos_curva)
     tamanho = 5
-    desenha_curvas(seg, (0, 255, 0))
-    circulos = []
-    for i in range(25):
-        circulos.append(gera_circulos(tamanho, seg))
+    
+    circulos = []   
 
-
-    for i in circulos:
-        color = (255, 0, 255) if i[2] else (255, 255, 0)
-        pg.draw.circle(screen, color, (i[0], i[1]), tamanho)
-
-    upd(circulos, tamanho, seg)
+    upd(circulos, tamanho, seg, screen)
